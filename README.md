@@ -1,1 +1,6 @@
-# aoc2022
+# Advent Of Code 2022
+
+
+No idea if I will do them all....
+
+
