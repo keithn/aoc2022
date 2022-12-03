@@ -12,12 +12,11 @@ public class Day3
             .Select(l => l.first.Intersect(l.second).First())
             .Select(Score)
             .Sum();
-
+ 
 
         Console.WriteLine($"Part 1: {sum}");
 
-        sum = lines.Select((s, i) => (idx: i / 3, v: s)).GroupBy(x => x.idx)
-            .Select(g => g.Select(kv => kv.v).ToList())
+        sum = lines.Chunk(3)
             .Select(g => g[0].Intersect(g[1].Intersect(g[2])).First())
             .Select(Score)
             .Sum();
