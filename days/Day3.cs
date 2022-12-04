@@ -8,8 +8,7 @@ public class Day3
 
         var lines = File.ReadLines("days/Day3.txt");
 
-        var sum = lines.Select(l => (first: l[0..(l.Length / 2)], second: l[(l.Length / 2)..]))
-            .Select(l => l.first.Intersect(l.second).First())
+        var sum = lines.Select(l => l[0..(l.Length / 2)].Intersect( second: l[(l.Length / 2)..]).First())
             .Select(Score)
             .Sum();
  
