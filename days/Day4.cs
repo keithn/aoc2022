@@ -9,11 +9,7 @@ public class Day4
         var lines = File.ReadLines("days/Day4.txt");
         var assignments = lines.Select(l => l.Split("," ).Select(ToRange).ToList()).ToList();
         
-        Range ToRange(string s)
-        {
-            var parts = s.Split("-");
-            return new Range(int.Parse(parts[0]), int.Parse(parts[1]));
-        }
+        Range ToRange(string s) => s.Split("-") is string[] p ? new Range(int.Parse(p[0]), int.Parse(p[1])) : null; 
 
         var covers = assignments .Count(r => Covers(r[0], r[1]) || Covers(r[1],r[0]));
         bool Covers(Range a, Range b) => a.Start<= b.Start&& a.End>= b.End;
