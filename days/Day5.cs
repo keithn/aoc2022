@@ -8,7 +8,7 @@ public class Day5
     {
         var lines = File.ReadLines("days/Day5.txt");
 
-        List<Stack<char>> ParseDockDefinition(IEnumerable<string> lines)
+        List<Stack<char>> ParseStacksDefinition(IEnumerable<string> lines)
         {
             var stackDefinition = lines.TakeWhile(l => !l.Contains("move"))
                 .Where(l => !string.IsNullOrWhiteSpace(l)) 
@@ -28,24 +28,24 @@ public class Day5
 
         var instructions = lines.SkipWhile(l => !l.Contains("move")).Select(ParseInstruction).ToList();
 
-        var dock = ParseDockDefinition(lines);
+        var stacks = ParseStacksDefinition(lines);
         foreach (var instruction in instructions)
         {
             Enumerable.Range(0, instruction.Count).ToList()
-                .ForEach(_ => dock[instruction.To - 1].Push(dock[instruction.From - 1].Pop()));
+                .ForEach(_ => stacks[instruction.To - 1].Push(stacks[instruction.From - 1].Pop()));
         }
 
-        Console.WriteLine($"Part 1: {new string(dock.Select(s => s.Peek()).ToArray())}");
+        Console.WriteLine($"Part 1: {new string(stacks.Select(s => s.Peek()).ToArray())}");
 
-        dock = ParseDockDefinition(lines);
+        stacks = ParseStacksDefinition(lines);
         foreach (var instruction in instructions)
         {
             Enumerable.Range(0, instruction.Count)
-                .Select(_ => dock[instruction.From - 1].Pop())
+                .Select(_ => stacks[instruction.From - 1].Pop())
                 .Reverse().ToList()
-                .ForEach(v => dock[instruction.To - 1].Push(v));
+                .ForEach(v => stacks[instruction.To - 1].Push(v));
         }
 
-        Console.WriteLine($"Part 2: {new string(dock.Select(s => s.Peek()).ToArray())}");
+        Console.WriteLine($"Part 2: {new string(stacks.Select(s => s.Peek()).ToArray())}");
     }
 }
