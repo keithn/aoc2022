@@ -11,9 +11,9 @@ public class Day5
         List<Stack<char>> ParseDockDefinition(IEnumerable<string> lines)
         {
             var stackDefinition = lines.TakeWhile(l => !l.Contains("move"))
-                .Where(l => !string.IsNullOrWhiteSpace(l))
-                .Reverse()
-                .Skip(1)
+                .Where(l => !string.IsNullOrWhiteSpace(l)) 
+                .Reverse()  // reverse so the first things to push to the stack are at the top
+                .Skip(1)    // skip the stack numbering line
                 .Select(l => l.Chunk(4).Select(c => c.Where(char.IsLetter).FirstOrDefault()).ToList()).ToList();
             return Enumerable.Range(0, stackDefinition.First().Count())
                 .Select(stack =>
