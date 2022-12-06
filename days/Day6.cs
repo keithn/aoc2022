@@ -9,7 +9,7 @@ public class Day6
         {
             for (int i = 0; i < text.Length; i++)
             {
-                if (new HashSet<char>(text.Skip(i).Take(n)).Count == n) return i + n;
+                if (text.Skip(i).Take(n).Distinct().Count() == n) return i + n;
             }
             return 0;
         }
