@@ -6,8 +6,9 @@ public class Day7
     {
         public virtual int Size { get; init; }
 
-        public record Folder(string Name, Folder Parent, List<FileSystem> Entries = new()) : FileSystem
+        public record Folder(string Name, Folder Parent) : FileSystem
         {
+            public List<FileSystem> Entries = new();
             public override int Size => Entries.Sum(e => e.Size);
         };
         public record File(string Name) : FileSystem
