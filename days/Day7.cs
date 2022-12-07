@@ -6,7 +6,7 @@ public class Day7
     {
         public virtual int Size { get; init; }
 
-        public record Folder(string Name, Folder Parent, List<FileSystem> Entries) : FileSystem
+        public record Folder(string Name, Folder Parent, List<FileSystem> Entries = new()) : FileSystem
         {
             public override int Size => Entries.Sum(e => e.Size);
         };
@@ -33,7 +33,7 @@ public class Day7
 
         FileSystem.Folder Parse(IEnumerable<string> lines)
         {
-            var filesystem = new FileSystem.Folder("", null, new List<FileSystem>());
+            var filesystem = new FileSystem.Folder("", null);
             var current = filesystem;
             foreach (var line in lines)
             {
@@ -56,7 +56,7 @@ public class Day7
                     var parts = line.Replace("$", "").Split(" ", StringSplitOptions.TrimEntries);
                     current.Entries.Add((int.TryParse(parts[0], out int size))
                         ? (new FileSystem.File(parts[1]) { Size = size })
-                        : (new FileSystem.Folder(parts[1], current, new List<FileSystem>())));
+                        : (new FileSystem.Folder(parts[1], current )));
                 }
             }
             return filesystem;
