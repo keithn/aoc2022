@@ -45,6 +45,7 @@ public class Day9
         }
         var trail = TailTrail(lines, Enumerable.Range(1, 2).Select(_ => new Point(0, 0)).ToList());
         Console.WriteLine($"Part 1: {trail.Count()}");
+        
         trail = TailTrail(lines, Enumerable.Range(1, 10).Select(_ => new Point(0, 0)).ToList());
         Console.WriteLine($"Part 2: {trail.Count()}");
     }
