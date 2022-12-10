@@ -6,7 +6,6 @@ public class Day10
     {
         var tokens = File.ReadAllText("days/Day10.txt").Split(new[] { " ", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
         int x = 1;
-        int sum = 0;
         var snapshots = new List<int>();
         for (int i = 0; i < tokens.Length; i++)
         {
