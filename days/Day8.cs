@@ -2,7 +2,6 @@
 
 public class Day8
 {
-    
     public static void Solve()
     {
         var lines = File.ReadAllLines("days/Day8.txt").Select(l => l.Trim()).ToList();
@@ -22,8 +21,8 @@ public class Day8
                 {
                     var v = false;
                     var c = lines[row][col];
-                    v |= lines[row][0..col].All(x => x < c);
-                    v |= lines[row][(col+1)..(width)].All(x => x < c);
+                    for (var l = col - 1; l >= 0 && lines[row][l] < c; l--) if (l == 0) v = true;
+                    for (var l = col + 1; l <= width - 1 && lines[row][l] < c && !v; l++) if (l == width - 1) v = true;
                     for (var t = row - 1; t >= 0 && lines[t][col] < c && !v; t--) if (t == 0) v = true;
                     for (var t = row + 1; t <= height - 1 && lines[t][col] < c && !v; t++) if (t == height - 1) v = true;
                     if (v) visible++;
