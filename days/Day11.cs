@@ -49,10 +49,8 @@ public partial class Day11
         void MonkeyBusiness(Dictionary<int, Monkey> monkeys)
         {
             var monkeyOrder = monkeys.ToList().OrderBy(kv => kv.Key).Select(kv => kv.Value);
-            // given all the test divisors are prime we can mod all the values by the product of all the divisors
             // because the Test mod is several different values, we need to find a mod value that all the separate mods will evenly fit into
-            // because all the Test values are primes, they are the lowest possible divisor so to find a number that all the mods fit into evenly
-            // just multiply them together.
+            // so the product of all the divisors will fit all the mods fit into it evenly
             var productOfDivisors = monkeys.Select(kv => kv.Value.Test).Aggregate((a, b) => a * b);
             foreach (var monkey in monkeyOrder)
             {
