@@ -6,7 +6,6 @@ public class Day12
     {
         public bool Visited { get; set; } = false;
     }
-
     public record Point(int X, int Y)
     {
         public Point? Last { get; set; } = null;
