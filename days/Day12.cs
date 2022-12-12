@@ -27,12 +27,9 @@ public class Day12
 
     public static void Solve()
     {
-        var lines = File.ReadLines("days/Day12.txt").ToList();
-        Height[][]? heightMap = FromLines(lines);
+        var heightMap = File.ReadLines("days/Day12.txt").ToList().Select(l => l.Select(x => new Height(x)).ToArray()).ToArray();
         int width = heightMap.First().Length;
         int height = heightMap.Length;
-
-        Height[][]? FromLines(List<string> lines) => lines.Select(l => l.Select(x => new Height(x)).ToArray()).ToArray();
         bool Traversable(Point from, Point to)
         {
             if (to.X < 0 || to.X >= width || to.Y < 0 || to.Y >= height || heightMap[from.Y][from.X].Visited) return false;
@@ -59,19 +56,15 @@ public class Day12
             }
             return null; // no way!
         }
-
         void Reset(Height[][] heights)
         {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++) heights[y][x].Visited = false;
-            }
+            for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) heights[y][x].Visited = false;
         }
+
         var S = heightMap.ToArray().SelectMany((l, y) => l.Select((h, x) => new Point(h.C == 'S' ? x : -1, y))).First(p => p.X > -1);
         var path = FindEnd(S);
         var route = path.Seen().ToList();
         Console.WriteLine($"Part 1: {route.Count() - 1}");
-
 
         var lengths = new List<int>();
         var startingPoints = heightMap.ToArray().SelectMany((l, y) => l.Select((h, x) => new Point(h.C == 'S' || h.C =='a' ? x : -1, y))).Where(p => p.X > -1).ToList();
