@@ -9,15 +9,15 @@ public class Day12
         public bool Visited { get; set; } = false;
     }
 
-    public record Point(int X, int Y)
+    public record WayPoint(int X, int Y)
     {
-        public Point? Last { get; set; } = null;
-        public Point Up => new(X, Y - 1);
-        public Point Down => new(X, Y + 1);
-        public Point Left => new(X - 1, Y);
-        public Point Right => new(X + 1, Y);
+        public WayPoint? Last { get; set; } = null;
+        public WayPoint Up => new(X, Y - 1);
+        public WayPoint Down => new(X, Y + 1);
+        public WayPoint Left => new(X - 1, Y);
+        public WayPoint Right => new(X + 1, Y);
 
-        public IEnumerable<Point> Seen()
+        public IEnumerable<WayPoint> Seen()
         {
             var p = this;
             while (p != null)
@@ -32,7 +32,7 @@ public class Day12
         var lines = File.ReadLines("days/Day12.txt").ToList();
         Location[][] ToTerrain(IEnumerable<string> list) => list.Select(l => l.Select(x => new Location(x)).ToArray()).ToArray();
         
-        bool Traversable(Location[][] terrain, Point from, Point to, Func<char, char, bool> rule)
+        bool Traversable(Location[][] terrain, WayPoint from, WayPoint to, Func<char, char, bool> rule)
         {
             char Etoz(char c) => c == 'E' ? 'z' : c;
             char SEtoaz(char c) => c == 'S' ? 'a' : Etoz(c);
@@ -42,10 +42,10 @@ public class Day12
                 SEtoaz(terrain[to.Y][to.X].Height)
             );
         }
-        Point FindEnd(Location[][] terrain, char beginAt, char End, Func<char, char, bool> rule)
+        WayPoint FindEnd(Location[][] terrain, char beginAt, char End, Func<char, char, bool> rule)
         {
-            var start = terrain.SelectMany((l, y) => l.Select((h, x) => new Point(h.Height == beginAt ? x : -1, y))).First(p => p.X > -1);
-            Queue<Point> queue = new();
+            var start = terrain.SelectMany((l, y) => l.Select((h, x) => new WayPoint(h.Height == beginAt ? x : -1, y))).First(p => p.X > -1);
+            Queue<WayPoint> queue = new();
             queue.Enqueue(start);
             while (queue.Any())
             {
