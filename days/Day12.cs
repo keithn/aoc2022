@@ -8,7 +8,6 @@ public class Day12
     {
         public bool Visited { get; set; } = false;
     }
-
     public record WayPoint(int X, int Y)
     {
         public WayPoint? Last { get; set; } = null;
