@@ -34,12 +34,11 @@ public class Day12
         
         bool Traversable(Location[][] terrain, WayPoint from, WayPoint to, Func<char, char, bool> rule)
         {
-            char Etoz(char c) => c == 'E' ? 'z' : c;
-            char SEtoaz(char c) => c == 'S' ? 'a' : Etoz(c);
+            char NoMarker(char c) => c switch { 'S' => 'a', 'E' => 'z', _ => c };
             if (to.X < 0 || to.X >= terrain[0].Length || to.Y < 0 || to.Y >= terrain.Length || terrain[from.Y][from.X].Visited) return false;
             return rule(
-                SEtoaz(terrain[from.Y][from.X].Height),
-                SEtoaz(terrain[to.Y][to.X].Height)
+                NoMarker(terrain[from.Y][from.X].Height),
+                NoMarker(terrain[to.Y][to.X].Height)
             );
         }
         WayPoint FindEnd(Location[][] terrain, char beginAt, char End, Func<char, char, bool> rule)
