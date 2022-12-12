@@ -37,7 +37,7 @@ public class Day12
                 NoMarker(terrain[to.Y][to.X].Height)
             );
         }
-        WayPoint FindEnd(Location[][] terrain, char beginAt, char End, Func<char, char, bool> rule)
+        WayPoint Navigate(Location[][] terrain, char beginAt, char End, Func<char, char, bool> rule)
         {
             var start = terrain.SelectMany((l, y) => l.Select((h, x) => new WayPoint(h.Height == beginAt ? x : -1, y))).First(p => p.X > -1);
             Queue<WayPoint> queue = new(new []{start});
@@ -55,10 +55,10 @@ public class Day12
             return null; // no way!
         }
 
-        var path = FindEnd(ToTerrain(lines), 'S', 'E', (f, t) => f - t >= -1);
+        var path = Navigate(ToTerrain(lines), 'S', 'E', (f, t) => f - t >= -1);
         Console.WriteLine($"Part 1: {path.Seen().Count() }");
 
-        var path2 = FindEnd(ToTerrain(lines), 'E', 'a', (f, t) => f - t <= 1);
+        var path2 = Navigate(ToTerrain(lines), 'E', 'a', (f, t) => f - t <= 1);
         Console.WriteLine($"Part 2: {path2.Seen().Count() }");
     }
 }
