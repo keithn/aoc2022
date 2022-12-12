@@ -14,7 +14,6 @@ public class Day12
         public Point Down => new(X, Y + 1);
         public Point Left => new(X - 1, Y);
         public Point Right => new(X + 1, Y);
-
         public IEnumerable<Point> Seen()
         {
             var p = this;
@@ -23,11 +22,6 @@ public class Day12
                 yield return p;
                 p = p.Last;
             }
-        }
-
-        public override string ToString()
-        {
-            return $"({nameof(X)}: {X}, {nameof(Y)}: {Y})";
         }
     };
 
