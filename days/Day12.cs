@@ -58,7 +58,6 @@ public class Day12
                 });
                 terrain[p.Y][p.X].Visited = true;
             }
-
             return null; // no way!
         }
 
