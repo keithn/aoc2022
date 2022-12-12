@@ -16,10 +16,9 @@ public class Day12
         public WayPoint Down => new(X, Y + 1);
         public WayPoint Left => new(X - 1, Y);
         public WayPoint Right => new(X + 1, Y);
-
         public IEnumerable<WayPoint> Seen()
         {
-            var p = this;
+            var p = Last;
             while (p != null)
             {
                 yield return p;
@@ -60,9 +59,9 @@ public class Day12
         }
 
         var path = FindEnd(ToTerrain(lines), 'S', 'E', (f, t) => f - t >= -1);
-        Console.WriteLine($"Part 1: {path.Seen().Count() - 1}");
+        Console.WriteLine($"Part 1: {path.Seen().Count() }");
 
         var path2 = FindEnd(ToTerrain(lines), 'E', 'a', (f, t) => f - t <= 1);
-        Console.WriteLine($"Part 2: {path2.Seen().Count() - 1}");
+        Console.WriteLine($"Part 2: {path2.Seen().Count() }");
     }
 }
