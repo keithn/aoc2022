@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace Aoc2022.days;
+﻿namespace Aoc2022.days;
 
 public class Day12
 {
