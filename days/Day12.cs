@@ -44,8 +44,7 @@ public class Day12
         WayPoint FindEnd(Location[][] terrain, char beginAt, char End, Func<char, char, bool> rule)
         {
             var start = terrain.SelectMany((l, y) => l.Select((h, x) => new WayPoint(h.Height == beginAt ? x : -1, y))).First(p => p.X > -1);
-            Queue<WayPoint> queue = new();
-            queue.Enqueue(start);
+            Queue<WayPoint> queue = new(new []{start});
             while (queue.Any())
             {
                 var p = queue.Dequeue();
