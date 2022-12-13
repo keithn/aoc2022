@@ -5,7 +5,6 @@ public class Day13
     public static void Solve()
     {
         var packets = File.ReadLines("days/Day13.txt").Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
-        var packetPairs = packets.Chunk(2);
 
         (string token, string rest) GetToken(string s)
         {
@@ -59,10 +58,9 @@ public class Day13
             return p2.Length > 0 ? -1 : p1.Length > 0 ? 1 : 0;
         }
 
-        var evaluations = packetPairs.Select((pair, idx) =>
-            Compare(pair[0], pair[1])==-1 ? (pair[0], pair[1], idx + 1, 1) : (pair[0], pair[1], idx+1,0)).ToList();
-        var validPackets = evaluations.Where(i => i.Item4 == 1).ToList();
-        Console.WriteLine($"Part 1: {validPackets.Select(x => x.Item3).Sum()}");
+        var packetPairs = packets.Chunk(2);
+        var validPackets = packetPairs.Select((pair, idx) => Compare(pair[0], pair[1])==-1 ?  idx + 1 : 0).Where(i => i!=0).ToList();
+        Console.WriteLine($"Part 1: {validPackets.Sum()}");
 
         var part2Packets = packets.ToList();
         part2Packets.Add("[[2]]");
