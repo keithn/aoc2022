@@ -40,8 +40,7 @@ public class Day14
             {
                 var grainOfSand = DropSand(sandEntryPoint, floor);
                 if (exitBeforeFloor && grainOfSand.Y + 1 == floor) return this;
-                Add(grainOfSand, Soil.Sand);
-                if (ContainsKey(sandEntryPoint)) return this;
+                if(DrawPoint(grainOfSand, Soil.Sand) == sandEntryPoint) return this;
             }
         }
     }
