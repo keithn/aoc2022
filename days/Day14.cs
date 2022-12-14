@@ -4,11 +4,49 @@ namespace Aoc2022.days;
 
 public class Day14
 {
-    public enum Soil
+    public enum Soil { Rock, Sand, Empty }
+    public class Cave : Dictionary<Point, Soil>
     {
-        Rock,
-        Sand,
-        Empty
+        int Clamp(int x) => int.Clamp(x, -1, 1);
+        Point DrawPoint(Point p, Soil soil) =>  TryAdd(p, soil)?p:p;
+        Point DrawLine(Point from, Point to)
+        {
+            var delta = (x: Clamp(to.X - from.X), y: Clamp(to.Y - from.Y));
+            DrawPoint(from, Soil.Rock);
+            while (from != to)
+            {
+                from = DrawPoint(from.Add(delta), Soil.Rock);
+            }
+            return from;
+        }
+        public Cave PlaceRocks(List<List<Point>> rockScans)
+        {
+            rockScans.ForEach(scan => scan.Aggregate(DrawLine));
+            return this;
+        }
+        private readonly (int, int)[] _dropDirections = { (0, 1), (-1, 1), (1, 1) };
+        private Point DropSand(Point grainOfSand, int floor)
+        {
+            while (grainOfSand.Y < floor)
+            {
+                var candidates = _dropDirections.Select(d => grainOfSand.Add(d)).ToList();
+                if (candidates.All(p => ContainsKey(p) || p.Y == floor)) return grainOfSand;
+                grainOfSand = candidates.First(p => !ContainsKey(p));
+            }
+            return grainOfSand;
+        }
+        public Cave SimulateSand(bool exitBeforeFloor = true)
+        {
+            var floor = this.Select(p => p.Key.Y).Max() + 2;
+            var sandEntryPoint = new Point(500, 0);
+            while (true)
+            {
+                var grainOfSand = DropSand(sandEntryPoint, floor);
+                if (exitBeforeFloor && grainOfSand.Y + 1 == floor) return this;
+                Add(grainOfSand, Soil.Sand);
+                if (ContainsKey(sandEntryPoint)) return this;
+            }
+        }
     }
     public readonly record struct Point(int X, int Y)
     {
@@ -18,57 +56,16 @@ public class Day14
 
     public static void Solve()
     {
-        var rockScans = File.ReadLines("days/Day14.txt").Select(ToPoints).ToList();
         List<Point> ToPoints(string l) => l.Split("->", StringSplitOptions.TrimEntries).Select(ToPoint).ToList();
         Point ToPoint(string p) => Point.From(p.Split(',').Select(int.Parse).ToArray());
-        int Clamp(int x) => int.Clamp(x, -1, 1);
-
-        Dictionary<Point, Soil> PlaceRocks(Dictionary<Point, Soil> cave, List<List<Point>> rockScans)
-        {
-            foreach (var scan in rockScans)
-            {
-                var current = scan.First();
-                foreach (var target in scan.Skip(1))
-                {
-                    cave.TryAdd(current, Soil.Rock);
-                    var change = (x: Clamp(target.X - current.X), y: Clamp(target.Y - current.Y));
-                    while (current != target)
-                    {
-                        current = current.Add(change);
-                        cave.TryAdd(current, Soil.Rock);
-                    }
-                }
-            }
-            return cave;
-        }
-        Dictionary<Point, Soil> SimulateSand(Dictionary<Point, Soil> cave, bool exitBeforeFloor = true)
-        {
-            var drops = new[] { (0, 1), (-1, 1), (1, 1) };
-            var bottom = cave.Select(p => p.Key.Y).Max();
-            var origin = new Point(500, 0);
-            while (true)
-            {
-                var unit = origin;
-                while (unit.Y < bottom || !exitBeforeFloor)
-                {
-                    var candidates = drops.Select(d => unit.Add(d)).ToList();
-                    var hit = candidates.Where(p => cave.ContainsKey(p) || p.Y == bottom+2).ToList();
-                    if (hit.Count == drops.Length)
-                    {
-                        cave.Add(unit, Soil.Sand);
-                        break;
-                    }
-                    unit = candidates.First(p => !cave.ContainsKey(p));
-                }
-                if ((unit.Y >= bottom && exitBeforeFloor) || cave.ContainsKey(origin)) return cave; 
-            }
-        }
-        var cave = SimulateSand(PlaceRocks(new Dictionary<Point, Soil>(), rockScans));
+        var rockScans = File.ReadLines("days/Day14.txt").Select(ToPoints).ToList();
+        
+        var cave = new Cave().PlaceRocks(rockScans).SimulateSand();
         Console.WriteLine($"Part 1: {cave.Values.Count(v => v == Soil.Sand)}");
         
-        var cave2 = SimulateSand(PlaceRocks(new Dictionary<Point, Soil>(), rockScans), false);
+        var cave2 = new Cave().PlaceRocks(rockScans).SimulateSand(false);
         Console.WriteLine($"Part 2: {cave2.Values.Count(v => v == Soil.Sand)}");
-        
+
         ////////// Everything Below is just fun and to produce a render... ///////////
         Render(cave, "day14-part1.png");
         Render(cave2, "day14-part2.png");
@@ -94,8 +91,10 @@ public class Day14
                 };
                 sb.Append(t);
             }
+
             sb.AppendLine();
         }
+
         TextToImage.From(sb.ToString().Split("\r\n").ToList(), fileName, SandRockColorMap);
     }
 
