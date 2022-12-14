@@ -23,28 +23,28 @@ public class Day14
         Point ToPoint(string p) => Point.From(p.Split(',').Select(int.Parse).ToArray());
         int Clamp(int x) => int.Clamp(x, -1, 1);
 
-        Dictionary<Point, Soil> PlaceRocks(Dictionary<Point, Soil> pit, List<List<Point>> rockScans)
+        Dictionary<Point, Soil> PlaceRocks(Dictionary<Point, Soil> cave, List<List<Point>> rockScans)
         {
             foreach (var scan in rockScans)
             {
                 var current = scan.First();
                 foreach (var target in scan.Skip(1))
                 {
-                    pit.TryAdd(current, Soil.Rock);
+                    cave.TryAdd(current, Soil.Rock);
                     var change = (x: Clamp(target.X - current.X), y: Clamp(target.Y - current.Y));
                     while (current != target)
                     {
                         current = current.Add(change);
-                        pit.TryAdd(current, Soil.Rock);
+                        cave.TryAdd(current, Soil.Rock);
                     }
                 }
             }
-            return pit;
+            return cave;
         }
-        Dictionary<Point, Soil> SimulateSand(Dictionary<Point, Soil> pit, bool exitBeforeFloor = true)
+        Dictionary<Point, Soil> SimulateSand(Dictionary<Point, Soil> cave, bool exitBeforeFloor = true)
         {
             var drops = new[] { (0, 1), (-1, 1), (1, 1) };
-            var bottom = pit.Select(p => p.Key.Y).Max();
+            var bottom = cave.Select(p => p.Key.Y).Max();
             var origin = new Point(500, 0);
             while (true)
             {
@@ -52,41 +52,41 @@ public class Day14
                 while (unit.Y < bottom || !exitBeforeFloor)
                 {
                     var candidates = drops.Select(d => unit.Add(d)).ToList();
-                    var hit = candidates.Where(p => pit.ContainsKey(p) || p.Y == bottom+2).ToList();
+                    var hit = candidates.Where(p => cave.ContainsKey(p) || p.Y == bottom+2).ToList();
                     if (hit.Count == drops.Length)
                     {
-                        pit.Add(unit, Soil.Sand);
+                        cave.Add(unit, Soil.Sand);
                         break;
                     }
-                    unit = candidates.First(p => !pit.ContainsKey(p));
+                    unit = candidates.First(p => !cave.ContainsKey(p));
                 }
-                if ((unit.Y >= bottom && exitBeforeFloor) || pit.ContainsKey(origin)) return pit; 
+                if ((unit.Y >= bottom && exitBeforeFloor) || cave.ContainsKey(origin)) return cave; 
             }
         }
-        var pit = SimulateSand(PlaceRocks(new Dictionary<Point, Soil>(), rockScans));
-        Console.WriteLine($"Part 1: {pit.Values.Count(v => v == Soil.Sand)}");
+        var cave = SimulateSand(PlaceRocks(new Dictionary<Point, Soil>(), rockScans));
+        Console.WriteLine($"Part 1: {cave.Values.Count(v => v == Soil.Sand)}");
         
-        var pit2 = SimulateSand(PlaceRocks(new Dictionary<Point, Soil>(), rockScans), false);
-        Console.WriteLine($"Part 2: {pit2.Values.Count(v => v == Soil.Sand)}");
+        var cave2 = SimulateSand(PlaceRocks(new Dictionary<Point, Soil>(), rockScans), false);
+        Console.WriteLine($"Part 2: {cave2.Values.Count(v => v == Soil.Sand)}");
         
         ////////// Everything Below is just fun and to produce a render... ///////////
-        Render(pit, "day14-part1.png");
-        Render(pit2, "day14-part2.png");
+        Render(cave, "day14-part1.png");
+        Render(cave2, "day14-part2.png");
     }
 
-    public static void Render(Dictionary<Point, Soil> pit, string fileName)
+    public static void Render(Dictionary<Point, Soil> cave, string fileName)
     {
         var sb = new StringBuilder();
-        var xx = pit.Select(p => p.Key.X).Min();
-        var yy = pit.Select(p => p.Key.Y).Min();
-        var xX = pit.Select(p => p.Key.X).Max();
-        var yY = pit.Select(p => p.Key.Y).Max();
+        var xx = cave.Select(p => p.Key.X).Min();
+        var yy = cave.Select(p => p.Key.Y).Min();
+        var xX = cave.Select(p => p.Key.X).Max();
+        var yY = cave.Select(p => p.Key.Y).Max();
 
         for (int y = yy; y <= yY; y++)
         {
             for (int x = xx; x <= xX; x++)
             {
-                var t = (pit.TryGetValue(new Point(x, y), out var soil) ? soil : Soil.Empty) switch
+                var t = (cave.TryGetValue(new Point(x, y), out var soil) ? soil : Soil.Empty) switch
                 {
                     Soil.Rock => '#',
                     Soil.Sand => 'o',
