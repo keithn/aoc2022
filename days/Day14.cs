@@ -19,7 +19,7 @@ public class Day14
     public static void Solve()
     {
         var rockScans = File.ReadLines("days/Day14.txt").Select(ToPoints).ToList();
-        List<Point> ToPoints(string l) => l.Split("->", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(ToPoint).ToList();
+        List<Point> ToPoints(string l) => l.Split("->", StringSplitOptions.TrimEntries).Select(ToPoint).ToList();
         Point ToPoint(string p) => Point.From(p.Split(',').Select(int.Parse).ToArray());
         int Clamp(int x) => int.Clamp(x, -1, 1);
 
