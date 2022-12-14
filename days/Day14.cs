@@ -18,18 +18,12 @@ public class Day14
 
     public static void Solve()
     {
-        List<List<Point>> rockScans = File.ReadLines("days/Day14.txt")
-            .Select(ToPoints).ToList();
-
-        List<Point> ToPoints(string l) =>
-            l.Split("->", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Select(ToPoint).ToList();
-
+        var rockScans = File.ReadLines("days/Day14.txt").Select(ToPoints).ToList();
+        List<Point> ToPoints(string l) => l.Split("->", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(ToPoint).ToList();
         Point ToPoint(string p) => Point.From(p.Split(',').Select(int.Parse).ToArray());
-
         int Clamp(int x) => int.Clamp(x, -1, 1);
 
-        void PlaceRocks(Dictionary<Point, Soil> pit, List<List<Point>> rockScans)
+        Dictionary<Point, Soil> PlaceRocks(Dictionary<Point, Soil> pit, List<List<Point>> rockScans)
         {
             foreach (var scan in rockScans)
             {
@@ -45,9 +39,9 @@ public class Day14
                     }
                 }
             }
+            return pit;
         }
-
-        void SimulateSand(Dictionary<Point, Soil> pit, bool exitBeforeFloor = true)
+        Dictionary<Point, Soil> SimulateSand(Dictionary<Point, Soil> pit, bool exitBeforeFloor = true)
         {
             var drops = new[] { (0, 1), (-1, 1), (1, 1) };
             var bottom = pit.Select(p => p.Key.Y).Max();
@@ -66,25 +60,20 @@ public class Day14
                     }
                     unit = candidates.First(p => !pit.ContainsKey(p));
                 }
-                if ((unit.Y >= bottom && exitBeforeFloor) || pit.ContainsKey(origin)) return;
+                if ((unit.Y >= bottom && exitBeforeFloor) || pit.ContainsKey(origin)) return pit; 
             }
         }
-        var pit = new Dictionary<Point, Soil>();
-        PlaceRocks(pit, rockScans);
-        SimulateSand(pit);
-        Render(pit, "day14-part1.png");
-
+        var pit = SimulateSand(PlaceRocks(new Dictionary<Point, Soil>(), rockScans));
         Console.WriteLine($"Part 1: {pit.Values.Count(v => v == Soil.Sand)}");
         
-        var pit2 = new Dictionary<Point, Soil>();
-        PlaceRocks(pit2, rockScans);
-        SimulateSand(pit2, false);
+        var pit2 = SimulateSand(PlaceRocks(new Dictionary<Point, Soil>(), rockScans), false);
         Console.WriteLine($"Part 2: {pit2.Values.Count(v => v == Soil.Sand)}");
+        
+        ////////// Everything Below is just fun and to produce a render... ///////////
+        Render(pit, "day14-part1.png");
         Render(pit2, "day14-part2.png");
     }
 
-
-    // Everything below is Rending a Picture For Fun!
     public static void Render(Dictionary<Point, Soil> pit, string fileName)
     {
         var sb = new StringBuilder();
@@ -105,12 +94,9 @@ public class Day14
                 };
                 sb.Append(t);
             }
-
             sb.AppendLine();
         }
         TextToImage.From(sb.ToString().Split("\r\n").ToList(), fileName, SandRockColorMap);
-        
-        
     }
 
     private static readonly Dictionary<char?, string> SandRockColorMap = new()
