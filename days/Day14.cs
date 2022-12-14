@@ -13,10 +13,7 @@ public class Day14
         {
             var delta = (x: Clamp(to.X - from.X), y: Clamp(to.Y - from.Y));
             DrawPoint(from, Soil.Rock);
-            while (from != to)
-            {
-                from = DrawPoint(from.Add(delta), Soil.Rock);
-            }
+            while (from != to) from = DrawPoint(from.Add(delta), Soil.Rock); 
             return from;
         }
         public Cave PlaceRocks(List<List<Point>> rockScans)
